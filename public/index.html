@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>Congestion Image Annotation Tool</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <link rel="stylesheet" href="css/style.css">
+
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+        
+        <script src="scripts/image-annotation.js"></script>
+        
+    </head>
+    <body>
+        <div class="header">
+			<div class="container">
+				<h1 class="header-heading">Congestion Image Annotation Tool</h1>
+			</div>
+		</div>
+		<div class="content">
+			<div class="container">
+                <h2>Congestion is: a line of traffic that would cause you to slow or stop</h2>
+				<div class="col1">
+                    <form action="#">
+                        <fieldset>
+                            <label for="user_email" id="user_email_label">Please enter your email before annotating: </label>
+                            <input id="user_email" type="text" value="">
+                            <label class="error" for="user_email" id="user_email_error">This field is required.</label>
+                            <input type="button" name="submit" class="btn" id="submit_btn" value="Submit" />
+                        </fieldset>
+                    </form>
+                    <div id="traffic_image"></div>
+                    <div id="last_annotation"></div>
+                    <hr>
+                    <div class="table">
+                        <table>
+                            <tr>
+                                <td class="align-right">
+                                    <strong>LEFT</strong> arrow:
+                                </td>
+                                <td>
+                                    <strong>NO CONGESTION</strong>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="align-right">
+                                    <strong>RIGHT</strong> arrow:
+                                </td>
+                                <td>
+                                    <strong>CONGESTION</strong>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="align-right">
+                                    <strong>DOWN</strong> arrow:
+                                </td>
+                                <td>
+                                    <strong>DON'T KNOW</strong>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="align-right">
+                                    <strong>UP</strong> arrow:
+                                </td>
+                                <td>
+                                    <strong>BROKEN IMAGE</strong>*
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="align-right">
+                                    Letter '<strong>u</strong>':
+                                </td>
+                                <td>
+                                    <strong>UNDO</strong> last annotation
+                                </td>
+                            </tr>
+                        </table>
+                        *(please also use BROKEN for images where the camera cannot see road - e.g. images with the camera pointing at the wall)
+                    </div>
+                </div>
+                <div class="col2">
+                    <h3>Example classifications</h3>
+                    
+                    <img src="images/congestion-day-cyclists.jpg" alt="congestion-example" class="img-responsive">
+                    <p>Classify as <strong>congestion</strong> (when congestion is caused by slower moving vehicles).</p>
+                    <img src="images/congestion-night-trafficlight.jpg" alt="congestion-example" class="img-responsive">
+                    <p>Classify as <strong>congestion</strong> (even when congestion is due to a traffic light).</p>
+                    <img src="images/nocongestion-day2.jpg" alt="no-congestion-example" class="img-responsive">
+                    <p>Classify as <strong>no congestion</strong>.</p><br>
+				</div>
+				<div class="col3">
+                    <h3 class="white">:</h3>
+                    <img src="images/congestion-night-onelane.jpg" alt="congestion-example" class="img-responsive">
+                    <p>Classify as <strong>congestion</strong> (even when only one direction is congested).</p>
+                    <img src="images/congestion-night-indistance2.jpg" alt="congestion-example" class="img-responsive">
+                    <p>Classify as <strong>congestion</strong> (even when congestion is in the distance)</p>
+                    <img src="images/nocongestion-night.jpg" alt="no-congestion-example" class="img-responsive">
+                    <p>Classify as <strong>no congestion</strong>.</p><br>
+				</div>
+            </div>
+        </div>
+        <div class="footer">
+			<div class="container">
+			</div>
+		</div>
+    </body>
+</html>

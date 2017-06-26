@@ -1,0 +1,46 @@
+{
+  "_id": "_design/getAnnotatedImageJSON",
+  "_rev": "24-9e8661445a327d0cd4293b3d1ba17664",
+  "views": {
+    "annotation-counts": {
+      "map": "function (doc) {\n  if (doc.hasOwnProperty(\"annotation\")) {\n    var emitValue = {\n      \"_id\": doc._id,\n      \"url\": doc.url,\n      \"congestion\": 0,\n      \"no-congestion\": 0,\n      \"unknown\": 0,\n      \"not-sure\": 0\n    };\n    doc.annotation.forEach(function(el){\n      ++emitValue[el.label];\n    });\n    emit(doc._id, emitValue);\n  }\n}"
+    },
+    "broken": {
+      "map": "function (doc) {\n  if (doc.hasOwnProperty(\"annotation\")) {\n    var broken = doc.annotation.some(function(el){\n      if (el.label === \"unknown\") {\n        return true;\n      }\n      return false;\n    });\n    if (broken) {\n      emit(doc._id, doc);\n    }\n  }\n}"
+    },
+    "by-user": {
+      "map": "function (doc) {\n  if (doc.hasOwnProperty(\"annotation\")) {\n    doc.annotation.forEach(function(el){\n      emit(el.user, doc);\n    });\n  }\n}"
+    },
+    "congestion": {
+      "map": "function (doc) {\n  if (doc.hasOwnProperty(\"annotation\")) {\n    var congestion = doc.annotation.some(function(el){\n      if (el.label === \"congestion\") {\n        return true;\n      }\n      return false;\n    });\n    if (congestion) {\n      emit(doc._id, doc);\n    }\n  }\n}"
+    },
+    "full-json": {
+      "map": "function (doc) {\n  if (doc.hasOwnProperty(\"annotation\")) {\n    emit(doc._id, doc);\n  }\n}"
+    },
+    "no-congestion": {
+      "map": "function (doc) {\n  if (doc.hasOwnProperty(\"annotation\")) {\n    var noCongestion = doc.annotation.some(function(el){\n      if (el.label === \"no-congestion\") {\n        return true;\n      }\n      return false;\n    });\n    if (noCongestion) {\n      emit(doc._id, doc);\n    }\n  }\n}"
+    },
+    "not-sure": {
+      "map": "function (doc) {\n  if (doc.hasOwnProperty(\"annotation\")) {\n    var notSure = doc.annotation.some(function(el){\n      if (el.label === \"not-sure\") {\n        return true;\n      }\n      return false;\n    });\n    if (notSure) {\n      emit(doc._id, doc);\n    }\n  }\n}"
+    },
+    "user-counts": {
+      "reduce": "_sum",
+      "map": "function (doc) {\n  if (doc.hasOwnProperty(\"annotation\")) {\n    doc.annotation.forEach(function(el) {\n      emit(el.user, 1);\n    });\n  }\n}"
+    },
+    "needs-annotating": {
+      "reduce": "_sum",
+      "map": "function (doc) {\n  if (doc.hasOwnProperty(\"annotation\")) {\n    var users = [];\n    doc.annotation.map(function(el) {\n      users.push(el.user);\n    });\n    users = users.sort().filter(function(value, index, array) {\n          return (index === 0) || (value !== array[index-1]);\n      });\n    if (users.length < 3) {\n      emit(doc._id, 1);\n    }\n  } else {\n    emit(doc._id, 1);\n  }\n}"
+    },
+    "fully-annotated": {
+      "map": "function (doc) {\n  if (doc.hasOwnProperty(\"annotation\")) {\n    var users = [];\n      doc.annotation.map(function(el) {\n        users.push(el.user);\n      });\n      users = users.sort().filter(function(value, index, array) {\n            return (index === 0) || (value !== array[index-1]);\n        });\n      if (users.length >= 3) {\n        emit(doc._id, doc);\n      }\n    }\n  }"
+    },
+    "conflicting-annotations": {
+      "map": "function (doc) {\n  if (doc.hasOwnProperty(\"annotation\")) {\n    var labels = [];\n    doc.annotation.map(function(el) {\n      labels.push(el.label);\n    });\n    labels = labels.sort().filter(function(value, index, array) {\n        return (index === 0) || (value !== array[index-1]);\n    });\n    if (labels.length > 1) {\n      emit(doc._id, doc);\n    }\n  }\n}"
+    },
+    "user-annotated-doc-ids": {
+      "reduce": "function (keys, values, rereduce) {\n  //var setValues = new Set(values);\n  //values = array.from(setValues);\n  var reduceVals = [];\n  values.map(function(el) {\n    if (Object.prototype.toString.call( el ) === '[object Array]') {\n      el.map(function(subEl) {\n        reduceVals.push(subEl);\n      });\n    } else {\n      reduceVals.push(el);\n    }\n  });\n  return reduceVals;\n}",
+      "map": "function (doc) {\n  if (doc.hasOwnProperty(\"annotation\")) {\n    doc.annotation.forEach(function(el) {\n      emit(el.user, doc._id);\n    });\n  }\n}"
+    }
+  },
+  "language": "javascript"
+}
