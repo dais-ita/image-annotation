@@ -147,6 +147,9 @@ $(document).ready(function(){
                 .replaceAll("#last_annotation");
             } else {
                 $.get("get-image-info-by-id?id=" + lastImgId, function(lastImgData, status) {
+                    if (typeof lastImgData === 'string') {
+                        lastImgData = JSON.parse(lastImgData);
+                    }
                     if (lastImgData.hasOwnProperty("annotation")) { // this should always be true!
                         lastImgData.annotation.pop();
                         if (lastImgData.annotation.length === 0) {
